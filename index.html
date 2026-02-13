@@ -2,71 +2,329 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SoJoSo Agency - Acceuil</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Veux-tu être ma Augustine ?</title>
+    
+    <!-- Import des polices Google Fonts pour le style mignon -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+    
+    <!-- Script pour les confettis (effet de célébration) -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* --- STYLE CSS --- */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background-color: #fff0f3;
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Fond d'émojis flottants */
+        .emoji-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Pour ne pas bloquer les clics */
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .floating-emoji {
+            position: absolute;
+            bottom: -50px;
+            font-size: 2rem;
+            animation: floatUp linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
+            backdrop-filter: blur(8px);
+            max-width: 90%;
+            width: 400px;
+            border: 3px solid #fff;
+            position: relative;
+            z-index: 10;
+            transition: all 0.5s ease;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            color: #ff4d6d;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            text-shadow: 2px 2px 0px #fff;
+            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+
+        .gif-container {
+            margin-bottom: 30px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gif-container img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 15px;
+            object-fit: contain;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap; /* Pour que les boutons passent à la ligne sur très petits écrans */
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Nunito', sans-serif;
+            position: relative;
+            z-index: 2;
+        }
+
+        #yesBtn {
+            background-color: #ff4d6d;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 8px 25px rgba(255, 77, 109, 0.6); }
+            100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4); }
+        }
+
+        #yesBtn:hover {
+            background-color: #ff2a55;
+            animation: none; /* Arrête le pulse au survol pour l'effet scale */
+            transform: scale(1.1) rotate(-3deg);
+        }
+
+        #noBtn {
+            background-color: #e0e0e0;
+            color: #555;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            /* Important pour le mouvement fluide */
+            transition: top 0.2s ease, left 0.2s ease; 
+        }
+
+        /* Message caché par défaut */
+        #success-message {
+            display: none;
+            color: #ff4d6d;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        #success-message p {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+                width: 90%;
+            }
+            h1 { font-size: 1.8rem; }
+            .gif-container { height: 160px; }
+            button { padding: 12px 20px; font-size: 1rem; }
+        }
+    </style>
 </head>
 <body>
-    <header class="topbar">
-        <div class="logo">
-            <a href="index.html" class="logo-image"><img src="img/SoJoSo-Logo.png" alt=""></a>
+
+    <!-- Conteneur pour les émojis flottants -->
+    <div class="emoji-background" id="emojiContainer"></div>
+
+    <div class="container" id="mainCard">
+        <h1 id="question">Veux-tu être ma Valentine ?</h1>
+        
+        <div class="gif-container">
+            <!-- Image de chat mignon qui demande -->
+            <img id="mainGif" src="https://media.tenor.com/K_wVn8i84iYAAAAi/mochi-mochi-peach-cat-cute.gif" alt="Cute Cat Asking">
         </div>
-        <nav>
-            <a href="index.html" class="active">Acceuil</a>
-            <a href="qui-sommes-nous.html" class="">Qui sommes-nous ?</a>
-            <a href="faq.html">FAQ</a>
-            <a href="consulter.html" class="Consulter"><img src="img/Consulter.png" alt=""></a>
-        </nav>
-    </header>
-    <main class="main">
-        <div class="container-1">
-            <article class="titre">
-                <a class="informations-image"><img src="img/information-image-1.png" alt=""></a>
-                <h1 class="title">Des proglèmes à régler ?</h1>
-                <p class="paragraphe"> 
-                    Vous êtes au bon endroit ! Nos équipes sont la pour vous prendre en charge et vous aider pour de nombreux problèmes !  
-                </p>
-            </article>
+
+        <div class="buttons" id="btnGroup">
+            <button id="yesBtn">Oui 💖</button>
+            <button id="noBtn">Non 💔</button>
         </div>
-        <div class="partenariat">
-            <h1 class="title"> &lsaquo; L'agence partenaire	qui nous aide dans nos enquêtes &rsaquo;</h1>
-            <a class="mda"><img src="img/md&a.png" alt=""></a>
-            <p class="description">Michelet Détectives & Associates : Herlo0ck Sholmes et Coles Phesses</p>
+
+        <div id="success-message">
+            <!-- Image de calins joyeux -->
+            <div class="gif-container">
+                <img src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif" alt="Bear Kiss">
+            </div>
+            <p>Je sais je suis trop drôle 🤪 On se voit demain !<br> Je t'aime ! 🥰</p>
         </div>
-        <div class="container-1">
-            <article class="titre">
-                <a class="informations1-image"><img src="img/ecommerce.png" alt=""></a>
-                <div class="citation">Coles Phesses</div>
-                <h1 class="title">“Un service original qui complète le marché”</h1>
-                <p class="paragraphe"> 
-                    Notre service est en effet assez inédit. En dehors de la MD&A, très peu de services de cette sorte sont proposés sur le marché. La SoJoSo Agency est complète et nous vous conseillons d’aller voirs notre vidéo de présentation !  
-                </p>
-            </article>
-        </div>
-        <div class="container-2">
-            <article class="titre">
-                <a class="informations-image"><img src="img/finance.png" alt=""></a>
-                <div class="citation">Clonarumi</div>
-                <h1 class="title">“En plus, il s’agit d’un service sans frais !”</h1>
-                <p class="paragraphe">
-                    En effet, comme le dit notre critique, notre service est pour le moment 100% gratuit ! Il est important de pouvoir accéder à ce genre de service sans frais, c’est pour ça que nous sommes là !   
-                </p>
-            </article>
-        </div>
-        <div class="container-2">
-            <article class="titre">
-                <a class="informations-image"><img src="img/messages.png" alt=""></a>
-                <h1 class="title">Nous résolvons vos affaires à distance</h1>
-                <p class="paragraphe">
-                    Vous n'avez pas envie de vous déplacer ? Pas de problèmes ! Nous enquêtons 100% à distance par message, via Snapchat notamment.    
-                </p>
-            </article>
-        </div>
+    </div>
+
+    <script>
+        /* --- LOGIQUE JAVASCRIPT --- */
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const question = document.getElementById('question');
+        const mainGif = document.getElementById('mainGif');
+        const btnGroup = document.getElementById('btnGroup');
+        const successMessage = document.getElementById('success-message');
+        const container = document.querySelector('.container');
+        const emojiContainer = document.getElementById('emojiContainer');
+
+        // --- GÉNÉRATION D'ÉMOJIS FLOTTANTS ---
+        const emojis = ['❤️', '💖', '💘', '👙', '💓', '🥰', '😍', '🌹', '✨', '💌'];
+        
+        function createEmoji() {
+            const span = document.createElement('span');
+            span.classList.add('floating-emoji');
+            span.innerText = emojis[Math.floor(Math.random() * emojis.length)];
             
-    </main>
-    <footer class="footer">
-        Site conçu par Herl0ck Sholmes en avril 2022. License:2021-2022
-    </footer>
+            // Position horizontale aléatoire
+            span.style.left = Math.random() * 100 + 'vw';
+            
+            // Taille aléatoire
+            const size = Math.random() * 1.5 + 1; // Entre 1rem et 2.5rem
+            span.style.fontSize = size + 'rem';
+            
+            // Durée d'animation aléatoire (vitesse)
+            const duration = Math.random() * 3 + 4; // Entre 4s et 7s
+            span.style.animationDuration = duration + 's';
+            
+            // Délai aléatoire
+            span.style.animationDelay = Math.random() * 2 + 's';
+
+            emojiContainer.appendChild(span);
+
+            // Nettoyage après l'animation
+            setTimeout(() => {
+                span.remove();
+            }, (duration + 2) * 1000);
+        }
+
+        // Créer un émoji toutes les 400ms
+        setInterval(createEmoji, 400);
+
+
+        // --- LOGIQUE DU BOUTON NON ---
+        function moveButton() {
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const btnRect = noBtn.getBoundingClientRect();
+            
+            // Marges de sécurité pour ne pas sortir de l'écran
+            // On s'assure que le bouton reste visible
+            const safeMargin = 50; 
+            
+            let randomX = Math.random() * (viewportWidth - btnRect.width - safeMargin);
+            let randomY = Math.random() * (viewportHeight - btnRect.height - safeMargin);
+            
+            // S'assurer que X et Y sont positifs
+            randomX = Math.max(safeMargin, randomX);
+            randomY = Math.max(safeMargin, randomY);
+
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+            noBtn.style.zIndex = '1000';
+        }
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            moveButton();
+        });
+        
+        // Pour mobile : on ajoute touchstart pour plus de réactivité
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveButton();
+        });
+
+
+        // --- LOGIQUE DU BOUTON OUI ---
+        yesBtn.addEventListener('click', () => {
+            triggerConfetti();
+
+            question.style.display = 'none';
+            mainGif.style.display = 'none';
+            btnGroup.style.display = 'none';
+            noBtn.style.display = 'none'; // Cacher le bouton non
+
+            successMessage.style.display = 'block';
+            
+            // Animation d'apparition
+            container.style.transform = 'scale(1.05)';
+            setTimeout(() => container.style.transform = 'scale(1)', 200);
+
+            // Augmenter la fréquence des émojis en arrière plan pour la fête
+            setInterval(createEmoji, 100);
+        });
+
+        // --- CONFETTIS ---
+        function triggerConfetti() {
+            const duration = 3000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+            const random = (min, max) => Math.random() * (max - min) + min;
+
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                const particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+    </script>
 </body>
 </html>
