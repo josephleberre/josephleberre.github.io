@@ -190,7 +190,8 @@
 
     <div class="container" id="mainCard">
         <h1 id="question">Veux-tu être ma Augustine ?</h1>
-        <p id="question">(j'ai préféré traduire au cas où)</p>
+        <!-- CORRECTION ICI : ID changé de "question" à "questionp" -->
+        <p id="questionp">(j'ai préféré traduire au cas où)</p>
 
         <div class="gif-container">
             <!-- Image de chat mignon qui demande -->
@@ -216,7 +217,7 @@
         const yesBtn = document.getElementById('yesBtn');
         const noBtn = document.getElementById('noBtn');
         const question = document.getElementById('question');
-        const questionp = document.getElementById('questionp');
+        const questionp = document.getElementById('questionp'); // Maintenant cet ID existe
         const mainGif = document.getElementById('mainGif');
         const btnGroup = document.getElementById('btnGroup');
         const successMessage = document.getElementById('success-message');
@@ -298,7 +299,8 @@
             triggerConfetti();
 
             question.style.display = 'none';
-            questionp.style.display = 'none';
+            // Cette ligne ne plantera plus car questionp existe
+            if (questionp) questionp.style.display = 'none'; 
             mainGif.style.display = 'none';
             btnGroup.style.display = 'none';
             noBtn.style.display = 'none'; // Cacher le bouton non
