@@ -212,10 +212,16 @@
         <button class="main-btn" onclick="addTimeSlot()">Enregistrer la session</button>
     </div>
 
-    <div id="tab-quick" class="input-section">
-        <div class="form-group">
-            <label>Nombre d'heures à ajouter</label>
-            <input type="number" id="quickHours" placeholder="Ex: 3.5" step="0.25">
+   <div id="tab-quick" class="input-section">
+        <label>Temps à ajouter</label>
+        <div class="row">
+            <div class="form-group">
+                <input type="number" id="quickHours" placeholder="Heures" min="0" step="1">
+            </div>
+            <div class="form-group" style="text-align: center; padding-top: 15px; font-weight: bold; color: var(--text-dim);">h</div>
+            <div class="form-group">
+                <input type="number" id="quickMinutes" placeholder="Minutes" min="0" max="59" step="1">
+            </div>
         </div>
         <button class="main-btn" onclick="addQuickHours()">Ajouter à la session</button>
     </div>
@@ -283,21 +289,28 @@
 
     // Ajouter des heures brutes
     function addQuickHours() {
-        const val = parseFloat(document.getElementById('quickHours').value);
-        if(!val || val <= 0) return alert("Saisis un nombre d'heures !");
+        const h = parseInt(document.getElementById('quickHours').value) || 0;
+        const m = parseInt(document.getElementById('quickMinutes').value) || 0;
+        
+        const totalMinutes = (h * 60) + m;
+
+        if(totalMinutes <= 0) return alert("Saisis un temps valide !");
 
         const entry = {
             id: Date.now(),
             type: 'Ajout Rapide',
-            label: `${val} heures ajoutées`,
+            label: `${h}h${m.toString().padStart(2, '0')} ajoutées`,
             sub: 'Directement',
-            minutes: val * 60,
+            minutes: totalMinutes,
             date: new Date().toLocaleDateString('fr-FR')
         };
 
         entries.push(entry);
         finalizeEntry();
+        
+        // Vider les champs
         document.getElementById('quickHours').value = '';
+        document.getElementById('quickMinutes').value = '';
     }
 
     function finalizeEntry() {
