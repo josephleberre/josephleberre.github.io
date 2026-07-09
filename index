@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>August(in)come</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fdf8f9; /* Fond très clair, légère touche poudrée */
+            --card: #ffffff; /* Cartes blanc pur, minimaliste */
+            --primary: #e11d48; /* Rose framboise chic et dynamique */
+            --accent: #f97316; /* Touche abricot estivale */
+            --text: #27272a; /* Gris presque noir, très lisible */
+            --text-dim: #71717a; /* Gris doux pour le texte secondaire */
+            --danger: #ef4444; 
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            padding: 20px; 
+            display: flex; 
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .app-container { width: 100%; max-width: 480px; }
+
+        /* Header & Totals */
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 32px; font-weight: 800; margin-bottom: 20px; background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px;}
+
+        .total-card {
+            background: linear-gradient(135deg, var(--card) 0%, #fff5f7 100%);
+            padding: 25px;
+            border-radius: 24px;
+            text-align: center;
+            border: 1px solid rgba(225, 29, 72, 0.1);
+            box-shadow: 0 10px 25px rgba(225, 29, 72, 0.05);
+            margin-bottom: 25px;
+        }
+        .total-label { font-size: 14px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .total-amount { font-size: 42px; font-weight: 800; color: var(--primary); margin: 5px 0; }
+        .total-hours { font-size: 18px; color: var(--accent); font-weight: 600; }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--card);
+            padding: 5px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #f4f4f5;
+        }
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: 0.3s;
+            color: var(--text-dim);
+        }
+        .tab.active { background: var(--bg); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+        /* Forms */
+        .input-section { display: none; background: var(--card); padding: 20px; border-radius: 20px; margin-bottom: 20px; border: 1px solid #f4f4f5; box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
+        .input-section.active { display: block; animation: fadeIn 0.3s ease; }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 13px; color: var(--text-dim); margin-bottom: 8px; margin-left: 5px; font-weight: 600;}
+        input {
+            width: 100%;
+            padding: 14px;
+            background: #fafafa;
+            border: 1px solid #e4e4e7;
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 16px;
+            transition: 0.2s;
+        }
+        input:focus { outline: none; border-color: var(--primary); background: #ffffff; box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.1); }
+
+        .row { display: flex; gap: 10px; }
+        .row > div { flex: 1; }
+
+        button.main-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: #ffffff; /* Texte blanc sur fond rose */
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+        }
+        button.main-btn:active { transform: scale(0.98); }
+
+        /* History List */
+        .history-title { font-size: 18px; margin-bottom: 15px; padding-left: 5px; font-weight: 800;}
+        .entry-item {
+            background: var(--card);
+            padding: 15px;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--primary);
+            border-top: 1px solid #f4f4f5;
+            border-right: 1px solid #f4f4f5;
+            border-bottom: 1px solid #f4f4f5;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            animation: slideIn 0.3s ease;
+        }
+        .entry-info h4 { font-size: 15px; margin-bottom: 2px; }
+        .entry-info p { font-size: 13px; color: var(--text-dim); }
+        .entry-value { font-weight: 800; color: var(--primary); text-align: right; }
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: none;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 15px;
+            font-size: 12px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+
+        .money-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 24px;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .rate-box { margin-bottom: 20px; }
+
+        .fun-comment {
+            margin-top: 15px;
+            font-size: 13px;
+            font-style: italic;
+            color: var(--text-dim);
+            font-weight: 600;
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <h1>August(in)come</h1>
+        
+        <div class="rate-box">
+            <label>Mon salaire horaire (€)</label>
+            <input type="number" id="hourlyRate" value="12.31" step="0.05" oninput="calculateAll()">
+        </div>
+
+        <div class="total-card">
+            <div class="total-label">Gains Estimés</div>
+            <div class="total-amount" id="displayMoney">0.00 €</div>
+            <div class="total-hours" id="displayHours">0h 00m</div>
+            <div id="randomComment" class="fun-comment">Prête à encaisser ! 💸</div>
+        </div>
+    </header>
+
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab(event, 'tab-slots')">Horaires</div>
+        <div class="tab" onclick="switchTab(event, 'tab-quick')">Ajout Rapide</div>
+    </div>
+
+    <div id="tab-slots" class="input-section active">
+        <label>Ma session de travail</label>
+        <div class="row">
+            <div class="form-group">
+                <input type="time" id="workStart">
+            </div>
+            <div class="form-group" style="text-align: center; padding-top: 15px;">à</div>
+            <div class="form-group">
+
+                <input type="time" id="workEnd">
+            </div>
+        </div>
+
+        <label>Pause (facultatif)</label>
+        <div class="row">
+            <div class="form-group">
+                <input type="time" id="breakStart">
+            </div>
+            <div class="form-group" style="text-align: center; padding-top: 15px;">à</div>
+            <div class="form-group">
+                <input type="time" id="breakEnd">
+            </div>
+        </div>
+        <button class="main-btn" onclick="addTimeSlot()">Enregistrer la session</button>
+    </div>
+
+    <div id="tab-quick" class="input-section">
+        <div class="form-group">
+            <label>Nombre d'heures à ajouter</label>
+            <input type="number" id="quickHours" placeholder="Ex: 3.5" step="0.25">
+        </div>
+        <button class="main-btn" onclick="addQuickHours()">Ajouter à la session</button>
+    </div>
+
+    <h3 class="history-title">Récaptulaif</h3>
+    <div id="historyList">
+        </div>
+    
+    <button onclick="clearHistory()" style="width: 100%; background: none; border: none; color: var(--text-dim); margin-top: 30px; font-size: 12px; text-decoration: underline; cursor: pointer;">Réinitialiser tout</button>
+</div>
+
+<script>
+    let entries = JSON.parse(localStorage.getItem('summerCash_entries')) || [];
+
+    // Navigation Onglets
+    function switchTab(e, tabId) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.input-section').forEach(s => s.classList.remove('active'));
+        e.target.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    // Calculer la durée entre deux heures (format HH:MM)
+    function getDuration(start, end) {
+        if (!start || !end) return 0;
+        const s = start.split(':');
+        const e = end.split(':');
+        const startDate = new Date(0, 0, 0, s[0], s[1], 0);
+        const endDate = new Date(0, 0, 0, e[0], e[1], 0);
+        let diff = endDate.getTime() - startDate.getTime();
+        if (diff < 0) diff += 24 * 60 * 60 * 1000; // Gestion nuit
+        return diff / 1000 / 60; // retour en minutes
+    }
+
+    // Ajouter une session complète
+    function addTimeSlot() {
+        const ws = document.getElementById('workStart').value;
+        const we = document.getElementById('workEnd').value;
+        const bs = document.getElementById('breakStart').value;
+        const be = document.getElementById('breakEnd').value;
+
+        if(!ws || !we) return alert("Saisis au moins ton heure de début et de fin !");
+
+        let totalMin = getDuration(ws, we);
+        let pauseMin = (bs && be) ? getDuration(bs, be) : 0;
+        let finalMin = totalMin - pauseMin;
+
+        if(finalMin <= 0) return alert("La pause est plus longue que le travail !");
+
+        const entry = {
+            id: Date.now(),
+            type: 'Session',
+            label: `${ws} - ${we}`,
+            sub: bs ? `Dont pause ${bs}-${be}` : 'Sans pause',
+            minutes: finalMin,
+            date: new Date().toLocaleDateString('fr-FR')
+        };
+
+        entries.push(entry);
+        finalizeEntry();
+        
+        // Reset champs
+        ['workStart','workEnd','breakStart','breakEnd'].forEach(id => document.getElementById(id).value = '');
+    }
+
+    // Ajouter des heures brutes
+    function addQuickHours() {
+        const val = parseFloat(document.getElementById('quickHours').value);
+        if(!val || val <= 0) return alert("Saisis un nombre d'heures !");
+
+        const entry = {
+            id: Date.now(),
+            type: 'Ajout Rapide',
+            label: `${val} heures ajoutées`,
+            sub: 'Directement',
+            minutes: val * 60,
+            date: new Date().toLocaleDateString('fr-FR')
+        };
+
+        entries.push(entry);
+        finalizeEntry();
+        document.getElementById('quickHours').value = '';
+    }
+
+    function finalizeEntry() {
+        save();
+        render();
+        moneyAnimation();
+    }
+
+    function deleteEntry(id) {
+        entries = entries.filter(e => e.id !== id);
+        save();
+        render();
+    }
+
+    function save() {
+        localStorage.setItem('summerCash_entries', JSON.stringify(entries));
+        localStorage.setItem('summerCash_rate', document.getElementById('hourlyRate').value);
+    }
+
+    function render() {
+        const list = document.getElementById('historyList');
+        const rate = parseFloat(document.getElementById('hourlyRate').value) || 0;
+        list.innerHTML = '';
+
+        let totalMin = 0;
+
+        entries.sort((a,b) => b.id - a.id).forEach(e => {
+            totalMin += e.minutes;
+            const h = Math.floor(e.minutes / 60);
+            const m = Math.round(e.minutes % 60);
+            
+            list.innerHTML += `
+                <div class="entry-item">
+                    <div class="entry-info">
+                        <h4>${e.label}</h4>
+                        <p>${e.date} • ${e.sub}</p>
+                    </div>
+                    <div style="display:flex; align-items:center">
+                        <div class="entry-value">
+                            ${h}h${m.toString().padStart(2, '0')}<br>
+                            <small style="color:var(--text-dim)">${((e.minutes/60)*rate).toFixed(2)}€</small>
+                        </div>
+                        <button class="btn-delete" onclick="deleteEntry(${e.id})">✕</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        const totalHours = totalMin / 60;
+        document.getElementById('displayMoney').innerText = (totalHours * rate).toFixed(2) + " €";
+        
+        const mainH = Math.floor(totalMin / 60);
+        const mainM = Math.round(totalMin % 60);
+        document.getElementById('displayHours').innerText = `${mainH}h ${mainM}m`;
+
+        // Mise à jour du petit commentaire drôle
+        const totalMoney = totalHours * rate;
+        document.getElementById('randomComment').innerText = getRandomComment(totalMoney);
+    }
+
+    function calculateAll() {
+        save();
+        render();
+    }
+
+    // Animation de billets
+    function moneyAnimation() {
+        for (let i = 0; i < 25; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'money-particle';
+            particle.innerText = ['💸', '💵', '💰', '✨'][Math.floor(Math.random() * 4)];
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.top = '-50px';
+            particle.style.duration = (Math.random() * 2 + 1) + 's';
+            particle.style.animationDuration = particle.style.duration;
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), 3000);
+        }
+    }
+
+    function clearHistory() {
+        if(confirm("Supprimer toutes les données ?")) {
+            entries = [];
+            finalizeEntry();
+        }
+    }
+
+    function getRandomComment(totalMoney) {
+        if (totalMoney <= 0) return "Prête à encaisser ! 💸";
+        
+        const sushiCount = Math.floor(totalMoney / 17); // Calcule le nombre de menus Kokeshi
+        
+        const comments = [
+            "Et encore un petit peu plus pour le voyage en Angleterre ! 🇬🇧",
+            "Tu vas le mettre sur ton Livret A ? 📈",
+            "WOAW ! C'est que la richesse n'est plus très loin...",
+            "Je te dois combien pour la place de parking ?",
+            "N'hésites pas si t'as besoin d'un coffre fort 🤪"
+        ];
+
+        // On ajoute la blague du sushi seulement s'il y a assez pour en acheter au moins un
+        if (sushiCount > 0) {
+            comments.push(`Et hop, de quoi se payer ${sushiCount} Kokeshi ! 🍣`);
+        }
+
+        // Retourne une phrase au hasard
+        return comments[Math.floor(Math.random() * comments.length)];
+    }
+    // Initialisation
+    window.onload = () => {
+        const savedRate = localStorage.getItem('summerCash_rate');
+        if(savedRate) document.getElementById('hourlyRate').value = savedRate;
+        render();
+    };
+</script>
+
+</body>
+</html>
